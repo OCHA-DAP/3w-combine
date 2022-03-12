@@ -6,7 +6,7 @@ Writes to standard output.
 import ckancrawler, csv, logging, re, sys
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("3wtest")
+logger = logging.getLogger("3wtest-scan")
 
 crawler = ckancrawler.Crawler("https://data.humdata.org", delay=0, user_agent="HDX-Developer-2015")
 
