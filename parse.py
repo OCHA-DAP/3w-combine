@@ -13,9 +13,14 @@ logger = logging.getLogger("3wtest-parser")
 scan_data = hxl.data(hxl.make_input(sys.stdin.buffer))
 
 HEADER_ROW = [
+    "Provider",
+    "Dataset",
+    "Hash",
     "Country code",
     "Org name",
     "Org role",
+    "Function",
+    "Attributes",
 ]
 
 TAG_ROW = [
@@ -25,6 +30,7 @@ TAG_ROW = [
     "#country+code",
     "#org+name",
     "#org+role",
+    "#org+function",
     "#meta+attributes+list",
 ]
 
@@ -50,14 +56,17 @@ def parse_dataset(output, scan_row, provider_code, dataset_code, countries):
                 indexed_columns.append((i, column, role, function, column.attributes))
         logger.info("Successfully opened %s", url)
         parse_data_rows(output, scan_row, provider_code, dataset_code, dataset.columns_hash, countries, dataset, indexed_columns)
-    except hxl.HXLException as e:
+    except:
         logger.warning("Cannot parse %s as HXL data", url)
 
 def parse_data_rows(output, scan_row, provider_code, dataset_code, columns_hash, countries, dataset, indexed_columns):
     for data_row in dataset:
         for country_code in countries:
             for indexed_column in indexed_columns:
-                value= data_row.values[indexed_column[0]]
+                try:
+                    value= data_row.values[indexed_column[0]]
+                except:
+                    value=None
                 output.writerow([
                     provider_code,
                     dataset_code,
