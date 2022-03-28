@@ -1,8 +1,8 @@
 VENV=venv/bin/activate
 
-SCAN=output/$(shell date +%Y%m%d)-ocha-3w-resources.csv
+SCAN=output/ocha-3w-resources.csv
 
-PARSE=output/$(shell date +%Y%m%d)-ocha-3w-orgs.csv
+PARSE=output/ocha-3w-orgs.csv
 
 all: scan parse
 
@@ -20,3 +20,6 @@ $(SCAN): scan.py $(VENV)
 
 $(PARSE): $(SCAN) $(VENV)
 	. $(VENV) && cat $(SCAN) | python parse.py
+
+clean:
+	rm -rf $(SCAN) $(PARSE)
