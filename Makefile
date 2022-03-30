@@ -18,8 +18,10 @@ $(VENV): requirements.txt
 $(SCAN): scan.py $(VENV)
 	. $(VENV) && python scan.py > output/temp.csv && mv output/temp.csv $(SCAN)
 
-$(PARSE): $(SCAN) $(VENV)
+$(PARSE): $(SCAN) $(VENV) FORCE
 	. $(VENV) && cat $(SCAN) | python parse.py
+
+FORCE:
 
 clean:
 	rm -rf $(SCAN) $(PARSE)

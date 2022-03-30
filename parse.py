@@ -19,7 +19,7 @@ HEADER_ROW = [
     "Country code",
     "Org name",
     "Org role",
-    "Function",
+    "Org type",
     "Attributes",
 ]
 
@@ -30,7 +30,7 @@ TAG_ROW = [
     "#country+code",
     "#org+name",
     "#org+role",
-    "#org+function",
+    "#org+type",
     "#meta+attributes+list",
 ]
 
@@ -50,45 +50,54 @@ def parse_dataset(output, scan_row, provider_code, dataset_code, countries):
         dataset = hxl.data(url, http_headers={"User-Agent": "HDX-Developer-2015"})
         indexed_columns = []
         for i, column in enumerate(dataset.columns):
-            if column.tag == "#org":
+            if column.tag == "#org" and "type" not in column.attributes and "code" not in column.attributes:
                 role = get_role(column)
-                function = get_function(column)
-                indexed_columns.append((i, column, role, function, column.attributes))
+                type_index = get_type_index(column, dataset.columns)
+                indexed_columns.append((i, role, type_index, column.attributes))
         logger.info("Successfully opened %s", url)
         parse_data_rows(output, scan_row, provider_code, dataset_code, dataset.columns_hash, countries, dataset, indexed_columns)
-    except:
-        logger.warning("Cannot parse %s as HXL data", url)
+    except hxl.input.HXLTagsNotFoundException as e1:
+        logger.debug("No HXL hashtags in %s", url)
+    except Exception as e2:
+        logger.exception(e2)
 
 def parse_data_rows(output, scan_row, provider_code, dataset_code, columns_hash, countries, dataset, indexed_columns):
     for data_row in dataset:
         for country_code in countries:
             for indexed_column in indexed_columns:
-                try:
-                    value= data_row.values[indexed_column[0]]
-                except:
-                    value=None
+                value= get_value(data_row.values, indexed_column[0])
+                role = indexed_column[1]
+                type = get_value(data_row.values, indexed_column[2])
+                attributes = indexed_column[3]
+                    
                 output.writerow([
                     provider_code,
                     dataset_code,
                     columns_hash,
                     country_code,
                     value,
-                    indexed_column[2],
-                    indexed_column[3],
-                    " | ".join(indexed_column[4]),
+                    role,
+                    type,
+                    " | ".join(attributes),
                 ])
 
-def get_function(column):
-    for function in ("type", "code", "abbrev", "acronym", "name",):
-        if function in column.attributes:
-            return function
-    return None
+def get_value(values, i):
+    if i < len(values) and i > -1:
+        return values[i]
+    else:
+        return None
 
 def get_role(column):
     for role in ("funder", "prog", "impl", "partner",):
         if role in column.attributes:
             return role
     return None
+
+def get_type_index(column, columns):
+    for i, col in enumerate(columns):
+        if col.tag == "#org" and "type" in col.attributes:
+            return i
+    return -1
             
 run(scan_data, sys.stdout)
 exit();
