@@ -1,2 +1,2 @@
 ckancrawler
-libhxl
+libhxl>=4.25.1

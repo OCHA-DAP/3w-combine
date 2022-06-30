@@ -5,7 +5,7 @@ import csv, hxl, logging, os, sys
 from pathlib import Path
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 
 LIST = "https://docs.google.com/spreadsheets/d/1CWV75enZEh26lYuidnCKyEyQxpzEzcIJp_qF-i_jhik/edit#gid=1013429077"
 
@@ -25,25 +25,30 @@ with hxl.data(LIST) as input:
 
     # Read each row of 3W dataset info
     for info in input:
-        country = info.get("#country+code").upper()
+        country_name = info.get("#country+name").upper()
+        country_code = info.get("#country+code").upper()
         dataset = info.get("#x_dataset+code")
         url = info.get("#x_resource+url")
 
-        logger.info("Processing %s %s %s", country, dataset, url)
+        logger.info("Processing %s %s %s", country_code, dataset, url)
+
+        name_spec = "Country name#country+name=" + country_name
+        code_spec = "Country code#country+code=" + country_code
 
         try:
-            with hxl.data(url) as source:
+            source = hxl.data(url, hxl.input.InputOptions(scan_ckan_resources=True)).add_columns((name_spec, code_spec,), True)
+            source.columns # make sure the source is valid
 
-                # The output file
-                file = path / (country + ".csv")
+            # The output file
+            file = path / (country_code + ".csv")
 
-                # Read the 3W row by row and write to the output file
-                with open(file, "w") as output:
-                    writer = csv.writer(output)
-                    writer.writerow(source.headers)
-                    writer.writerow(source.display_tags)
-                    for row in source:
-                        writer.writerow(row.values)
+            # Read the 3W row by row and write to the output file
+            with open(file, "w") as output:
+                writer = csv.writer(output)
+                writer.writerow(source.headers)
+                writer.writerow(source.display_tags)
+                for row in source:
+                    writer.writerow(row.values)
                         
         except Exception as e:
             # Simply note anything that doesn't parse and keep going
