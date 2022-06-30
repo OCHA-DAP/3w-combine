@@ -13,9 +13,64 @@ logger = logging.getLogger(__file__)
 
 COLUMN_DEFNS = [
     [
-        "Organisation",
-        "#org",
-        ["#org"],
+        "Implementing organisation name",
+        "#org+impl+name",
+        ["#org+name+impl-type", "#org+impl-acronym-type",],
+    ],
+    [
+        "Implementing organisation acronym",
+        "#org+impl+acronym",
+        ["#org+impl+acronym-type",],
+    ],
+    [
+        "Implementing organisation type",
+        "#org+impl+type",
+        ["#org+impl-name+type",],
+    ],
+    [
+        "Programming organisation name",
+        "#org+prog+name",
+        ["#org+name+prog-type", "#org+prog-acronym-type", "#org+name+leader-type", "#org+leader-acronym-type",],
+    ],
+    [
+        "Programming organisation acronym",
+        "#org+prog+acronym",
+        ["#org+prog+acronym-type", "#org+leader+acronym-type",],
+    ],
+    [
+        "Programming organisation type",
+        "#org+prog+type",
+        ["#org+prog-name+type", "#org+leader-name+type",],
+    ],
+    [
+        "Funding organisation name",
+        "#org+funder+name",
+        ["#org+name+funder-type", "#org+funder-acronym-type", "#org+name+funding-type", "#org+funding-acronym-type",],
+    ],
+    [
+        "Funding organisation acronym",
+        "#org+funder+acronym",
+        ["#org+funder+acronym-type", "#org+funding+acronym-type",],
+    ],
+    [
+        "Funding organisation type",
+        "#org+funder+type",
+        ["#org+funder-name+type", "#org+funding-name+type",],
+    ],
+    [
+        "Participating organisation name",
+        "#org+participating+name",
+        ["#org+name-type-impl-prog-leader", "#org-acronym-type-impl-prog-leader"],
+    ],
+    [
+        "Participating organisation acronym",
+        "#org+participating+acronym",
+        ["#org+acronym-type-impl-prog-leader"],
+    ],
+    [
+        "Participating organisation type",
+        "#org+participating+type",
+        ["#org+type-impl"],
     ],
     [
         "Sector or cluster",
@@ -73,7 +128,7 @@ output.writerow([defn[0] for defn in COLUMN_DEFNS])
 output.writerow([defn[1] for defn in COLUMN_DEFNS])
 
 def get_matching_value (pattern, row):
-    pattern = hxl.model.TagPattern(pattern)
+    pattern = hxl.model.TagPattern.parse(pattern)
     for i, value in enumerate(row.values):
         if i < len(row.columns) and row.columns[i] and pattern.match(row.columns[i]):
             return value
