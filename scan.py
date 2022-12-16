@@ -46,7 +46,7 @@ for package in crawler.packages(q="vocab_Topics=who%20is%20doing%20what%20and%20
     countries = package["groups"]
 
     # OCHA offices only
-    if re.match("^ocha-.*", org["name"]) and org["name"] != "ocha-fts":
+    if re.match("^ocha-.*", org["name"]) and org["name"] not in ("ocha-ds", "ocha-fiss", "ocha-fts", "ocha-naas",):
         for resource in package["resources"]:
             output.writerow([
                 org["name"], # "name" means "id" in CKAN-speak
@@ -54,8 +54,8 @@ for package in crawler.packages(q="vocab_Topics=who%20is%20doing%20what%20and%20
                 package["name"],
                 package["title"],
                 package["dataset_date"],
-                " | ".join(country["name"] for country in countries),
-                " | ".join(country["title"] for country in countries),
+                " | ".join([country["name"].upper() for country in countries]),
+                " | ".join([country["title"] for country in countries]),
                 resource["name"],
                 resource["description"],
                 resource["url"],
