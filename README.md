@@ -44,10 +44,15 @@ or
 
 To finish off the combined 3W, it's necessary to remove duplicate entries for the same organisation in the same location, and set a cutoff date. To include entries updated only after 2021-12-31, use the following commands:
 
-  $ cat output/combined-3w-raw.csv | hxlselect -q 'date > 2021-12-31' | hxlsort -t date -r | hxldedup -t org,sector,country,adm1,adm2 > output/combined-3w-clean.csv
+  $ cat output/combined-3w-raw.csv \\
+		| hxlselect -q 'date > 2021-12-31' \\
+		| hxlselect -q '#org+name ~ .*[a-zA-Z].*' \\
+		| hxlsort -t date -r \\
+		| hxldedup -t org,sector,country,adm1,adm2 \\
+		| hxlsort -t country+name,adm1+name,adm2+name,org+name \\
+		> output/combined-3w-clean.csv
   
 or
 
-  $ make clean
-  
+  $ make fix
 

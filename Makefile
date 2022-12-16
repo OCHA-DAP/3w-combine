@@ -24,6 +24,7 @@ combine: $(VENV)
 fix: $(VENV)
 	. $(VENV) && cat $(COMBINED_RAW) \
 		| hxlselect -q 'date > 2021-12-31' \
+		| hxlselect -q '#org+name ~ .*[a-zA-Z].*' \
 		| hxlsort -t date -r \
 		| hxldedup -t org,sector,country,adm1,adm2 \
 		| hxlsort -t country+name,adm1+name,adm2+name,org+name \
