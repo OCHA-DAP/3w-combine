@@ -27,7 +27,7 @@ fix: $(VENV)
 		| hxlselect -q '#org+name ~ .*[a-zA-Z].*' \
 		| hxlsort -t date -r \
 		| hxldedup -t org,sector,country,adm1,adm2 \
-		| hxlsort -t country+name,adm1+name,adm2+name,org+name \
+		| hxlsort -t country+name,adm1+name,adm2+name,sector,org+name \
 		> $(COMBINED_FIXED)
 
 $(VENV): requirements.txt
