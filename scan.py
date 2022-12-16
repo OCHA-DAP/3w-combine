@@ -5,8 +5,13 @@ Writes to standard output.
 
 import ckancrawler, csv, logging, re, sys
 
+from urllib.parse import quote
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("3wtest-scan")
+
+OLD_TAG="who is doing what and where - 3w - 4w - 5w"
+NEW_TAG="who is doing what and where-3w-4w-5w"
 
 crawler = ckancrawler.Crawler("https://data.humdata.org", delay=0, user_agent="HDX-Developer-2015")
 
@@ -40,26 +45,37 @@ output.writerow([
     "#date+resource+revised",
 ])
     
+def process(tag):
+    for package in crawler.packages(fq="vocab_Topics:\"{}\"".format(tag)):
 
-for package in crawler.packages(q="vocab_Topics=who%20is%20doing%20what%20and%20where%20-%203w%20-%204w%20-%205w&vocab_Topics=hxl"):
-    org = package["organization"]
-    countries = package["groups"]
+        # Check if it's HXLated
+        if 'hxl' not in [tag["name"] for tag in package["tags"]]:
+            logger.warning("Skipping %s (not HXLated)", package["name"])
+            continue
 
-    # OCHA offices only
-    if re.match("^ocha-.*", org["name"]) and org["name"] not in ("ocha-ds", "ocha-fiss", "ocha-fts", "ocha-naas",):
-        for resource in package["resources"]:
-            output.writerow([
-                org["name"], # "name" means "id" in CKAN-speak
-                org["title"],
-                package["name"],
-                package["title"],
-                package["dataset_date"],
-                " | ".join([country["name"].upper() for country in countries]),
-                " | ".join([country["title"] for country in countries]),
-                resource["name"],
-                resource["description"],
-                resource["url"],
-                resource["last_modified"][:10], # just the date portion
-            ]);
+        org = package["organization"]
+        countries = package["groups"]
 
-exit();
+        # OCHA offices only
+        if re.match("^ocha-.*", org["name"]) and org["name"] not in ("ocha-ds", "ocha-fiss", "ocha-fts", "ocha-naas",):
+            for resource in package["resources"]:
+                output.writerow([
+                    org["name"], # "name" means "id" in CKAN-speak
+                    org["title"],
+                    package["name"],
+                    package["title"],
+                    package["dataset_date"],
+                    " | ".join([country["name"].upper() for country in countries]),
+                    " | ".join([country["title"] for country in countries]),
+                    resource["name"],
+                    resource["description"],
+                    resource["url"],
+                    resource["last_modified"][:10], # just the date portion
+                ]);
+
+if __name__ == "__main__":
+    for tag in (OLD_TAG, NEW_TAG,):
+        print("Tag:", tag, file=sys.stderr)
+        process(tag)
+
+
