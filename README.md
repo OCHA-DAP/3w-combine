@@ -1,7 +1,7 @@
 3W test for HDX
 ===============
 
-Scan 3W datasets and aggregate basic information.
+Scan HXLated 3W datasets on HDX and aggregate into a single basic 3W-OP (operational presence). Current cutoff is after 2021-12-31.
 
 ## Utilities
 
