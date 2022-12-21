@@ -31,7 +31,7 @@ fix: $(VENV)
 		> $(COMBINED_FIXED)
 
 $(VENV): requirements.txt
-	rm -rf venv && virtualenv venv && . $(VENV) && pip install -r requirements.txt
+	rm -rf venv && python3 -m venv venv && . $(VENV) && pip install -r requirements.txt
 
 FORCE:
 

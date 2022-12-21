@@ -206,12 +206,31 @@ def generate_3w(file_or_url):
 
                         # TODO add acronym, role, and type when available
                         for role, info in org_info.items():
-                            yield [
-                                get_value(row, info, 'name'),
-                                get_value(row, info, 'acronym'),
-                                role if role else None,
-                                get_value(row, info, 'type'),
-                            ] + rest_of_row
+
+                            # Can we spot multiple org names in the same row?
+                            org_name = get_value(row, info, 'name')
+                            org_acronym = get_value(row, info, 'acronym')
+                            for separator in ('|', ',',):
+                                if separator in org_name:
+                                    org_names = [name.strip() for name in separator.split(org_name)]
+                                    if org_acronym:
+                                        org_acronyms = [acronym.strip() for acronym  in separator.split(org_acronym)]
+                                    else:
+                                        org_acronyms = []
+                                    break
+                            else:
+                                org_names = [org_name.strip()]
+                                org_acronyms = [org_acronym.strip()] if org_acronym else []
+
+                            for i, name in enumerate(org_names):
+                                if name:
+                                    acronym = None if i >= len(org_acronyms) else org_acronyms[i]
+                                    yield [
+                                        name,
+                                        acronym,
+                                        role if role else None,
+                                        get_value(row, info, 'type'),
+                                    ] + rest_of_row
 
                         for org_name in row.get_all("#org-type-acronym"):
                             if org_name:
