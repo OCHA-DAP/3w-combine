@@ -1,3 +1,5 @@
+CUTOFF_DATE="2022-02-28"
+
 SCAN=output/ocha-3w-resources.csv
 
 OUTPUT_DIR=output
@@ -15,15 +17,15 @@ VENV=venv/bin/activate
 
 all: scan combine fix
 
-scan: scan.py $(VENV)
+scan: scan-hdx.py $(VENV)
 	. $(VENV) && python scan.py > output/temp.csv && mv output/temp.csv $(SCAN)
 
-combine: $(VENV) 
+combine: combine-3w.py $(VENV) 
 	. $(VENV) && python combine-3w.py $(SCAN) > $(COMBINED_RAW)
 
 fix: $(VENV)
 	. $(VENV) && cat $(COMBINED_RAW) \
-		| hxlselect -q 'date > 2021-12-31' \
+		| hxlselect -q "date > $(CUTOFF_DATE)" \
 		| hxlselect -q '#org+name ~ .*[a-zA-Z].*' \
 		| hxlsort -t date -r \
 		| hxldedup -t org,sector,country,adm1,adm2 \
@@ -33,5 +35,4 @@ fix: $(VENV)
 $(VENV): requirements.txt
 	rm -rf venv && python3 -m venv venv && . $(VENV) && pip install -r requirements.txt
 
-FORCE:
 
