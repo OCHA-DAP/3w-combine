@@ -1,0 +1,94 @@
+#x_pattern,#x_substitution,#x_tag
+ABNA,SHL,#sector+code
+Abris,SHL,#sector+code
+Abris / NFI,SHL,#sector+code
+Abris et ANA,SHL,#sector+code
+Abris/AME,SHL,#sector+code
+ABRIS/BNA/CCCM,"SHL, CCCM",#sector+code
+Abris&BNA,SHL,#sector+code
+Agriculture,FSC,#sector+code
+Appui à la surveillance de la Polio et des Maladies évitables par la vaccination y compris COVID-19 Appui à la vaccination Appui à la Gestion des Urgence sanitaires,HEA,#sector+code
+Camp Coordination & Camp Management,CCM,#sector+code
+Camp Coordination Camp Management,CCM,#sector+code
+Cash Assistance,Cash,#sector+code
+CCCM,CCM,#sector+code
+Child Protection,PRO-CPN,#sector+code
+CP,PRO-CPN,#sector+code
+Early Recovery,ERY,#sector+code
+Early Recovery & Livelihoods,ERY,#sector+code
+"Eau, Hygiène et Assainissement",WSH,#sector+code
+EDU,EDU,#sector+code
+Education,EDU,#sector+code
+EDUCATION,EDU,#sector+code
+Emergency Livelihoods,ERY,#sector+code
+Emergency Telecom,TEL,#sector+code
+EPAH,WSH,#sector+code
+ESNFI,SHL,#sector+code
+ETS,TEL,#sector+code
+Explosive Hazard,PRO-MIN,#sector+code
+Food,FSC,#sector+code
+Food Security,FSC,#sector+code
+Food Security and Agriculture,FSC,#sector+code
+FSC,FSC,#sector+code
+GBV,GBV,#sector+code
+Gender Based Violence,PRO-GBV,#sector+code
+General Protection,PRO,#sector+code
+HEA,HEA,#sector+code
+Health,HEA,#sector+code
+health,HEA,#sector+code
+HLP,PRO-HLP,#sector+code
+"Housing, Land and Property",PRO-HLP,#sector+code
+Livelihood,ERY,#sector+code
+livelihood,ERY,#sector+code
+logistics,LOG,#sector+code
+Logistics,LOG,#sector+code
+LOGISTIQUE,LOG,#sector+code
+Logistique,LOG,#sector+code
+MA,PRO-MIN,#sector+code
+MPCA,Cash,#sector+code
+Multi-cluster,Multisector,#sector+code
+Multi-Cluster,Multisector,#sector+code
+multi-cluster,Multisector,#sector+code
+Multi-Secteur,Multisector,#sector+code
+NFI,SHL,#sector+code
+NUT,NUT,#sector+code
+Nutrition,NUT,#sector+code
+PRO,PRO,#sector+code
+programme Illimin,PRO-CPN,#sector+code
+Protection,PRO,#sector+code
+PROTECTION,PRO,#sector+code
+protection,PRO,#sector+code
+Protection - LAM,PRO,#sector+code
+Protection - LTB,PRO-HLP,#sector+code
+Protection - PE,PRO,#sector+code
+Protection - VGB,PRO-GBV,#sector+code
+Protection de l'enfance,PRO-CPN,#sector+code
+Protection de l'Enfant,PRO-CPN,#sector+code
+Rapid Response Mechanism,ERY,#sector+code
+Refugees & Migrants Multi-sector,CCM,#sector+code
+Relevement Precoce,ERY,#sector+code
+Relèvement Précoce,ERY,#sector+code
+Réponse aux Rapatriés,CCM,#sector+code
+Réponse aux Réfugiés,CCM,#sector+code
+Réponse aux réfugiés,CCM,#sector+code
+Santé,WSH,#sector+code
+SANTÉ,HEA,#sector+code
+Securite Alimentaire,FSC,#sector+code
+Securité Alimentaire,FSC,#sector+code
+Securité alimentaire,FSC,#sector+code
+SÉCURITÉ ALIMENTAIRE,FSC,#sector+code
+Sécurité Alimentaire,FSC,#sector+code
+Sécurité alimentaire,FSC,#sector+code
+Shelter,SHL,#sector+code
+Shelter & Non Food Items,SHL,#sector+code
+Shelter and NFI,SHL,#sector+code
+Shelter/ NFI,SHL,#sector+code
+Shelter/NFI,SHL,#sector+code
+SHL,SHL,#sector+code
+SNFI,SHL,#sector+code
+Télécommunications,TEL,#sector+code
+VBG,PRO-GBV,#sector+code
+Violence basée sur le genre,PRO-GBV,#sector+code
+"Water, Sanitation & Hygiene",WSH,#sector+code
+"Water, Sanitation and Hygiene",EDU,#sector+code
+WSH,WSH,#sector+code
