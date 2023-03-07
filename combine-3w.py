@@ -45,7 +45,7 @@ HASHTAG_ROW = (
     "#org+acronym",
     "#org+role",
     "#org+type",
-    "#sector",
+    "#sector+name",
     "#country+name",
     "#country+code",
     "#adm1+name",
