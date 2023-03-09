@@ -76,6 +76,14 @@ OPTS = hxl.InputOptions(
 """ Input options for opening HXLated datasets """
 
 
+def to_str (v):
+    """ Convert value to a string, returning an empty string for None """
+    if v is None:
+        return ''
+    else:
+        return str(v)
+
+
 #
 # Special handling for orgs
 #
@@ -258,8 +266,8 @@ def generate_3w(file_or_url):
                         for role, info in org_info.items():
 
                             # Can we spot multiple org names in the same row?
-                            org_name = get_value(row, info, 'name')
-                            org_acronym = get_value(row, info, 'acronym')
+                            org_name = to_str(get_value(row, info, 'name'))
+                            org_acronym = to_str(get_value(row, info, 'acronym'))
                             for separator in ('|', ',',):
                                 if separator in org_name:
                                     org_names = [name.strip() for name in separator.split(org_name)]
