@@ -6,6 +6,7 @@ Scan HXLated 3W datasets on HDX and aggregate into a single basic 3W-OP (operati
 1. Scanning HDX for appropriate datasets and resources.
 2. Parsing the resources and merging them into a combined 3W.
 3. Postprocessing, including date filtering and deduplication.
+4. Generating aggregated reports
 
 You can run the entire process with a single command:
 
@@ -13,7 +14,7 @@ You can run the entire process with a single command:
 $ make all
 ```
 
-This will place the final combined 3W in the file ``output/combined-3w-clean.csv``
+This will place the final combined 3W in the file ``output/combined-3w-clean.csv`` and generate reports.
 
 
 ## Step 1: Scanning HDX
@@ -82,6 +83,21 @@ or the following, which will automatically set up a virtual environment with the
 ```
 $ make fix
 ```
+
+
+## Step 4: Generate reports
+
+To generate a collection of aggregated reports from the cleaned 3W, use the command
+
+```
+$ make reports
+```
+
+This will use HXL utilities to generate the following:
+
+- ``3w-op-country.csv`` — operational-presence by country
+- ``3w-op-admin1.csv`` — operational-presence by administrative level 1 subdivision
+- ``3w-op-admin2.csv`` — operational-presence by administrative level 2 subdivision
 
 
 ## Author
