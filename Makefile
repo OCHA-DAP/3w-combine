@@ -40,16 +40,18 @@ report-admin1: $(REPORT_ADMIN1)
 report-admin2: $(REPORT_ADMIN2)
 
 $(SCANNED): scan-hdx.py $(VENV)
+	rm -f $(SCANNED)
 	. $(VENV) && python scan-hdx.py > output/temp.csv
 	mv output/temp.csv $(SCANNED)
 
-$(COMBINED_RAW): combine-3w.py $(SCANNED) $(VENV) 
+$(COMBINED_RAW): combine-3w.py $(SCANNED) $(VENV)
+	rm -f $(COMBINED_RAW)
 	. $(VENV) && python combine-3w.py $(SCANNED) > output/temp.csv
 	mv output/temp.csv $(COMBINED_RAW)
 
 $(COMBINED_CLEANED): clean-3w.sh $(COMBINED_RAW) $(VENV)
-	. $(VENV) \
-	&& cat $(COMBINED_RAW) | sh clean-3w.sh $(CUTOFF_DATE) $(SECTOR_MAP) > output/temp.csv
+	rm -f $(COMBINED_CLEAN)
+	. $(VENV) && cat $(COMBINED_RAW) | sh clean-3w.sh $(CUTOFF_DATE) $(SECTOR_MAP) > output/temp.csv
 	mv output/temp.csv $(COMBINED_CLEANED)
 
 #
@@ -57,6 +59,7 @@ $(COMBINED_CLEANED): clean-3w.sh $(COMBINED_RAW) $(VENV)
 #
 
 $(REPORT_COUNTRY): $(COMBINED_CLEANED) $(VENV)
+	rm -f $(REPORT_COUNTRY)
 	. $(VENV) && cat $(COMBINED_CLEANED) \
 	| hxlexpand -t country+name,country+code \
 	| hxlcount -t org+name,org+acronym,sector+code,country+name,country+code \
@@ -65,6 +68,7 @@ $(REPORT_COUNTRY): $(COMBINED_CLEANED) $(VENV)
 	mv output/temp.csv $(REPORT_COUNTRY)
 
 $(REPORT_ADMIN1): $(COMBINED_CLEANED) $(VENV)
+	rm -f $(REPORT_ADMIN1)
 	. $(VENV) && cat $(COMBINED_CLEANED) \
 	| hxlexpand -t country+name,country+code \
 	| hxlcount -t org+name,org+acronym,sector+code,country+name,country+code,adm1+name,adm1+code \
@@ -73,6 +77,7 @@ $(REPORT_ADMIN1): $(COMBINED_CLEANED) $(VENV)
 	mv output/temp.csv $(REPORT_ADMIN1)
 
 $(REPORT_ADMIN2): $(COMBINED_CLEANED) $(VENV)
+	rm -f $(REPORT_ADMIN2)
 	. $(VENV) && cat $(COMBINED_CLEANED) \
 	| hxlexpand -t country+name,country+code \
 	| hxlcount -t org+name,org+acronym,sector+code,country+name,country+code,adm1+name,adm1+code,adm2+name,adm2+code \
@@ -91,7 +96,7 @@ clean-reports:
 	rm -f $(REPORTS)
 
 clean: clean-reports
-	rm -f $(COMBINED_RAW) $(COMBINED_CLEAN)
+	rm -f $(COMBINED_CLEAN)
 
 clean-all: clean
-	rm -f $(SCANNED)
+	rm -f $(COMBINED_RAW) $(SCANNED)

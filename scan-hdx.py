@@ -108,19 +108,22 @@ def scan(url, outfile):
         countries = package["groups"]
 
         for resource in package["resources"]:
-            output.writerow([
-                org["name"], # "name" means "id" in CKAN-speak
-                org["title"],
-                package["name"],
-                package["title"],
-                package["dataset_date"],
-                " | ".join([country["title"] for country in countries]),
-                " | ".join([country["name"].upper() for country in countries]),
-                resource["name"],
-                resource["description"],
-                resource["url"],
-                resource["last_modified"][:10], # just the date portion
-            ]);
+
+            # Repeat for each country
+            for country in countries:
+                output.writerow([
+                    org["name"], # "name" means "id" in CKAN-speak
+                    org["title"],
+                    package["name"],
+                    package["title"],
+                    package["dataset_date"],
+                    country["title"], # the country name
+                    country["name"], # the country code
+                    resource["name"],
+                    resource["description"],
+                    resource["url"],
+                    resource["last_modified"][:10], # just the date portion
+                ]);
 
 
 #
