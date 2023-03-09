@@ -23,7 +23,7 @@ SECTOR_MAP=$(INPUT_DIR)/sector-map.csv
 VENV=venv/bin/activate
 
 
-all: $(COMBINED_CLEANED)
+all: reports
 
 scan: $(SCANNED)
 
