@@ -19,7 +19,8 @@ SECTOR_MAP=$2
 hxlselect -q "date > $CUTOFF_DATE" |                               # exclude activites before the cutoff date
     hxlselect -q '#org+name ~ .*[a-zA-Z].*' |                      # exclude activities with blank orgs
     hxlsort -t date -r |                                           # sort by date
-    hxladd --spec 'Sector code#sector+code={{#sector+name}}' |         # add a new column for the sector code
+    hxladd --spec 'Sector code#sector+code={{#sector+name}}' |     # add a new column for the sector code
     hxlreplace --map $SECTOR_MAP |                                 # normalise sector codes
+    hxlexpand -t sector+code -s '|' |                              # split multiple codes after replacement
     hxldedup -t org,sector,country,adm1,adm2 |                     # deduplicate to get a 3W-OP
     hxlsort -t country+name,adm1+name,adm2+name,sector,org+name    # organise the result

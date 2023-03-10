@@ -49,7 +49,7 @@ $(COMBINED_RAW): combine-3w.py $(SCANNED) $(VENV)
 	. $(VENV) && python combine-3w.py $(SCANNED) > output/temp.csv
 	mv output/temp.csv $(COMBINED_RAW)
 
-$(COMBINED_CLEANED): clean-3w.sh $(COMBINED_RAW) $(VENV)
+$(COMBINED_CLEANED): clean-3w.sh $(COMBINED_RAW) $(SECTOR_MAP) $(VENV)
 	rm -f $(COMBINED_CLEAN)
 	. $(VENV) && cat $(COMBINED_RAW) | sh clean-3w.sh $(CUTOFF_DATE) $(SECTOR_MAP) > output/temp.csv
 	mv output/temp.csv $(COMBINED_CLEANED)
@@ -88,6 +88,8 @@ $(REPORT_ADMIN2): $(COMBINED_CLEANED) $(VENV)
 #
 # General management
 #
+
+build-venv: $(VENV)
 
 $(VENV): requirements.txt
 	rm -rf venv && python3 -m venv venv && . $(VENV) && pip install -r requirements.txt

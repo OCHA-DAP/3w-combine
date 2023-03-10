@@ -1,10 +1,10 @@
-#x_pattern,#x_substitution,#x_tag
+#x_pattern,#x_substitution,#x_tag,#x_regex,#meta+notes
 ABNA,SHL,#sector+code
 Abris,SHL,#sector+code
 Abris / NFI,SHL,#sector+code
 Abris et ANA,SHL,#sector+code
 Abris/AME,SHL,#sector+code
-ABRIS/BNA/CCCM,"SHL, CCCM",#sector+code
+ABRIS/BNA/CCCM,"SHL | CCCM",#sector+code
 Abris&BNA,SHL,#sector+code
 Agriculture,FSC,#sector+code
 Appui à la surveillance de la Polio et des Maladies évitables par la vaccination y compris COVID-19 Appui à la vaccination Appui à la Gestion des Urgence sanitaires,HEA,#sector+code
@@ -92,3 +92,4 @@ Violence basée sur le genre,PRO-GBV,#sector+code
 "Water, Sanitation & Hygiene",WSH,#sector+code
 "Water, Sanitation and Hygiene",EDU,#sector+code
 WSH,WSH,#sector+code
+^.*$,Other,#sector+code,"Keep this last (default value)"
