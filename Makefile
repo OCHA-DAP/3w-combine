@@ -17,6 +17,7 @@ REPORTS=$(REPORT_COUNTRY) $(REPORT_ADMIN1) $(REPORT_ADMIN2)
 
 INPUT_DIR=./input
 SECTOR_MAP=$(INPUT_DIR)/sector-map.csv
+SECTOR_MAP=$(INPUT_DIR)/sector-name-map.csv
 
 # Virtual environment
 
@@ -50,7 +51,7 @@ $(COMBINED_RAW): combine-3w.py $(SCANNED) $(VENV)
 	mv output/temp.csv $(COMBINED_RAW)
 
 $(COMBINED_CLEANED): clean-3w.sh $(COMBINED_RAW) $(SECTOR_MAP) $(VENV)
-	rm -f $(COMBINED_CLEAN)
+	rm -f $(COMBINED_CLEANED)
 	. $(VENV) && cat $(COMBINED_RAW) | sh clean-3w.sh $(SECTOR_MAP) > output/temp.csv
 	mv output/temp.csv $(COMBINED_CLEANED)
 

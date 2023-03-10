@@ -30,7 +30,7 @@ Food,FSC,#sector+code
 Food Security,FSC,#sector+code
 Food Security and Agriculture,FSC,#sector+code
 FSC,FSC,#sector+code
-GBV,GBV,#sector+code
+GBV,PRO-GBV,#sector+code
 Gender Based Violence,PRO-GBV,#sector+code
 General Protection,PRO,#sector+code
 HEA,HEA,#sector+code

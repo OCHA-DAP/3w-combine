@@ -86,7 +86,7 @@ def scan(url, outfile, cutoff_date):
         "#x_resource+id",
         "#x_resource+description",
         "#x_resource+url",
-        "#date+resource+revised",
+        "#date+resource+updated",
     ])
 
     # All packages tagged as 3Ws

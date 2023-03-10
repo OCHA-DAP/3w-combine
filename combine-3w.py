@@ -22,11 +22,11 @@ logger = logging.getLogger(__file__)
 
 
 ROLE_MAP = {
-    '+funder': 'funder',
-    '+funding': 'funder',
-    '+prog': 'prog',
-    '+impl': 'impl',
-    '+partner': 'partner',
+    'funder': 'funder',
+    'funding': 'funder',
+    'prog': 'prog',
+    'impl': 'impl',
+    'partner': 'impl',
 }
 """ Map of HXL attributes to org roles """
 
@@ -43,7 +43,11 @@ HEADER_ROW = (
     "Admin1 code",
     "Admin2 name",
     "Admin2 code",
-    "Date updated",
+    "Dateset id",
+    "Dataset start date",
+    "Dataset end date",
+    "Resource id",
+    "Resource update date",
     "Provider name",
     "Provider HDX id",
 )
@@ -62,7 +66,11 @@ HASHTAG_ROW = (
     "#adm1+code",
     "#adm2+name",
     "#adm2+code",
-    "#date+updated",
+    "#x_dataset+id",
+    "#date+dataset+start",
+    "#date+dataset+end",
+    "#x_resource+id",
+    "#date+resource+updated",
     "#meta+provider+name",
     "#meta+provider+id",
 )
@@ -126,9 +134,12 @@ def prescan_orgs(cols):
 
         # FIXME special case for Mali
         if col.tag == '#actor':
-            result['funding'] = { 'name': i, }
-            
-        if col.tag != '#org' or 'acronym' in col.attributes or 'type' in col.attributes:
+            result['funder'] = {
+                'name': i,
+            }
+            continue
+
+        if col.tag != '#org' or ('acronym' in col.attributes) or ('type' in col.attributes):
             continue
 
         role = get_org_role(col)
@@ -157,7 +168,7 @@ def prescan_orgs(cols):
             result[role]['type'] = i
         else:
             logger.error("Org type but no org name or acronym")
-    
+
     return result
 
 
@@ -184,12 +195,9 @@ def generate_3w(file_or_url):
                 return row.values[info[key]]
             except IndexError:
                 pass
-        return None
+        return ''
 
-    # Keep track of countries and resources we've already seen
-    # Assumes the input is sorted in inverse date order
-    # This way, we include only the latest resource for each country
-    countries_seen = set()
+    # Keep track of resources we've already seen
     resources_seen = set()
 
     # yield the first two rows
@@ -204,7 +212,9 @@ def generate_3w(file_or_url):
 
             country_name = resource.get("#country+name")
             country_code = resource.get("#country+code").upper()
-            date_updated = resource.get("#date+resource")
+            date_start = resource.get("#date+dataset+start")
+            date_end = resource.get("#date+dataset+end")
+            date_updated = resource.get("#date+resource+updated")
             source_name = resource.get("#org+name")
             source_id = resource.get("#org+id")
             url = resource.get("#x_resource+url")
@@ -215,11 +225,6 @@ def generate_3w(file_or_url):
                 continue
             else:
                 resources_seen.add(url)
-
-            # If we already have a 3W for this country, skip
-            if country_code in countries_seen:
-                logger.info("Skipping older dataset from %s", country_name)
-                continue
 
             logger.info("Trying %s from %s", url, source_id)
 
@@ -246,18 +251,22 @@ def generate_3w(file_or_url):
                         local_country_name = row.get("#country-code") if has_country_info else country_name
                         local_country_code = row.get("#country+code") if has_country_info else country_code
 
-                        # Note that we've seen this country
-                        countries_seen.add(local_country_code)
+                        if not local_country_code:
+                            continue
 
                         # This is the same for all copies of the row
                         rest_of_row = [
                             row.get("#sector"),
-                            row.get("#country-code") if has_country_info else country_name,
-                            row.get("#country+code") if has_country_info else country_code,
+                            local_country_name,
+                            local_country_code,
                             row.get("#adm1-code"),
                             row.get("#adm1+code"),
                             row.get("#adm2-code"),
                             row.get("#adm2+code"),
+                            resource.get("#x_dataset+id"),
+                            date_start,
+                            date_end,
+                            resource.get("#x_resource+id"),
                             date_updated,
                             source_name,
                             source_id,
@@ -265,34 +274,18 @@ def generate_3w(file_or_url):
 
                         for role, info in org_info.items():
 
-                            # Can we spot multiple org names in the same row?
-                            org_name = to_str(get_value(row, info, 'name'))
-                            org_acronym = to_str(get_value(row, info, 'acronym'))
-                            for separator in ('|', ',',):
-                                if separator in org_name:
-                                    org_names = [name.strip() for name in separator.split(org_name)]
-                                    if org_acronym:
-                                        org_acronyms = [acronym.strip() for acronym  in separator.split(org_acronym)]
-                                    else:
-                                        org_acronyms = []
-                                    break
-                            else:
-                                org_names = [org_name.strip()]
-                                org_acronyms = [org_acronym.strip()] if org_acronym else []
+                            org_name = get_value(row, info, 'name')
 
-                            for i, name in enumerate(org_names):
-                                if name:
-                                    acronym = None if i >= len(org_acronyms) else org_acronyms[i]
-                                    yield [
-                                        name,
-                                        acronym,
-                                        role if role else None,
-                                        get_value(row, info, 'type'),
-                                    ] + rest_of_row
-
-                        for org_name in row.get_all("#org-type-acronym"):
-                            if org_name:
-                                yield [org_name] + rest_of_row
+                            # Ignore an empty org name
+                            if not org_name:
+                                continue
+                            
+                            yield [
+                                org_name,
+                                get_value(row, info, 'acronym'),
+                                role,
+                                get_value(row, info, 'type'),
+                            ] + rest_of_row
 
             except IOError as e:
                 logger.warning("%s: %s", url, str(e))
