@@ -8,16 +8,14 @@
 # Started by David Megginson
 ########################################################################
 
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <cutoff-date> <sector-map>" >&2
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <sector-map>" >&2
     exit 2
 fi
 
-CUTOFF_DATE=$1
-SECTOR_MAP=$2
+SECTOR_MAP=$1
 
-hxlselect -q "date > $CUTOFF_DATE" |                               # exclude activites before the cutoff date
-    hxlselect -q '#org+name ~ .*[a-zA-Z].*' |                      # exclude activities with blank orgs
+hxlselect -q '#org+name ~ .*[a-zA-Z].*' |                      # exclude activities with blank orgs
     hxlsort -t date -r |                                           # sort by date
     hxladd --spec 'Sector code#sector+code={{#sector+name}}' |     # add a new column for the sector code
     hxlreplace --map $SECTOR_MAP |                                 # normalise sector codes

@@ -41,7 +41,7 @@ report-admin2: $(REPORT_ADMIN2)
 
 $(SCANNED): scan-hdx.py $(VENV)
 	rm -f $(SCANNED)
-	. $(VENV) && python scan-hdx.py > output/temp.csv
+	. $(VENV) && python scan-hdx.py $(CUTOFF_DATE) > output/temp.csv
 	mv output/temp.csv $(SCANNED)
 
 $(COMBINED_RAW): combine-3w.py $(SCANNED) $(VENV)
@@ -51,7 +51,7 @@ $(COMBINED_RAW): combine-3w.py $(SCANNED) $(VENV)
 
 $(COMBINED_CLEANED): clean-3w.sh $(COMBINED_RAW) $(SECTOR_MAP) $(VENV)
 	rm -f $(COMBINED_CLEAN)
-	. $(VENV) && cat $(COMBINED_RAW) | sh clean-3w.sh $(CUTOFF_DATE) $(SECTOR_MAP) > output/temp.csv
+	. $(VENV) && cat $(COMBINED_RAW) | sh clean-3w.sh $(SECTOR_MAP) > output/temp.csv
 	mv output/temp.csv $(COMBINED_CLEANED)
 
 #

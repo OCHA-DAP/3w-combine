@@ -45,7 +45,7 @@ ORG_EXCLUSIONS = ('ocha-ds', 'ocha-fiss', 'ocha-fts', 'ocha-naas',)
 # Main processing
 #
 
-def scan(url, outfile):
+def scan(url, outfile, cutoff_date):
     """ Scan an HDX site for OCHA 3W resources and save to a HXLated CSV file.
 
     Parameters:
@@ -64,7 +64,8 @@ def scan(url, outfile):
         "Org name",
         "Dataset id",
         "Dataset name",
-        "Dateset date",
+        "Dateset start date",
+        "Dateset end date",
         "Country names",
         "Country codes",
         "Resource id",
@@ -78,7 +79,8 @@ def scan(url, outfile):
         "#org+name",
         "#x_dataset+id",
         "#x_dataset+title",
-        "#date+dataset",
+        "#date+dataset+start",
+        "#date+dataset+end",
         "#country+name+list",
         "#country+code+list",
         "#x_resource+id",
@@ -90,6 +92,19 @@ def scan(url, outfile):
     # All packages tagged as 3Ws
     for package in crawler.packages(fq="vocab_Topics:\"{}\"".format(TAG_3W)):
 
+        # Figure out the start and end dates for the dataset
+        result = re.match(r'^\[(.+) TO (.+)\]$', package['dataset_date'])
+        if not result:
+            logger.error("Bad dataset date '%s' for %s", package[dataset_date], package['name'])
+            continue
+        dataset_start_date = result.group(1)[:10]
+        dataset_end_date = result.group(2)[:10]
+
+        # Skip if the dataset is before the cutoff
+        if dataset_end_date != '*' and dataset_end_date < cutoff_date:
+            logger.info("Skipping dataset %s (end date %s is too early)", package['name'], dataset_end_date)
+            continue
+        
         org = package["organization"]
 
         # Check if it's from an OCHA field office
@@ -109,6 +124,12 @@ def scan(url, outfile):
 
         for resource in package["resources"]:
 
+            modified_date = resource["last_modified"][:10] # just the date portion
+
+            if modified_date < cutoff_date:
+                logger.info("Skipping resource %s in dataset %s: modified date %s is before cutoff", resource["name"], package["name"], modified_date)
+                continue
+
             # Repeat for each country
             for country in countries:
                 output.writerow([
@@ -116,13 +137,14 @@ def scan(url, outfile):
                     org["title"],
                     package["name"],
                     package["title"],
-                    package["dataset_date"],
+                    dataset_start_date,
+                    dataset_end_date if dataset_end_date != '*' else '',
                     country["title"], # the country name
-                    country["name"], # the country code
+                    country["name"].upper(), # the country code
                     resource["name"],
                     resource["description"],
                     resource["url"],
-                    resource["last_modified"][:10], # just the date portion
+                    modified_date
                 ]);
 
 
@@ -131,7 +153,14 @@ def scan(url, outfile):
 #
 
 if __name__ == "__main__":
-    scan(HDX_SITE, sys.stdout)
+
+    if len(sys.argv) != 2:
+        logger.error("Usage: %s CUTOFF_DATE > OUTPUT.csv", sys.argv[0])
+        sys.exit(2)
+
+    cutoff_date = sys.argv[1]
+    
+    scan(HDX_SITE, sys.stdout, cutoff_date)
 
 # end
 
