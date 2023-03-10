@@ -1,16 +1,16 @@
-#x_pattern,#x_substitution
-CCM,"Camp Coordination / Management"
-EDU,"Education"
-ERY,"Early Recovery"
-FSC,"Food Security"
-HEA,"Health"
-LOG,"Logistics"
-NUT,"Nutrition"
-PRO,"Protection"
-PRO-CPN,"Child Protection"
-PRO-GBV,"Gender Based Violence"
-PRO-HLP,"Housing, Land and Property"
-PRO-MIN,"Mine Action"
-SHL,"Emergency Shelter and NFI"
-TEL,"Emergency Telecommunications"
-WSH,"Water Sanitation Hygiene"
+#x_pattern,#x_substitution,#x_tag
+CCM,"Camp Coordination / Management",#sector+name+norm
+EDU,"Education",#sector+name+norm
+ERY,"Early Recovery",#sector+name+norm
+FSC,"Food Security",#sector+name+norm
+HEA,"Health",#sector+name+norm
+LOG,"Logistics",#sector+name+norm
+NUT,"Nutrition",#sector+name+norm
+PRO,"Protection",#sector+name+norm
+PRO-CPN,"Child Protection",#sector+name+norm
+PRO-GBV,"Gender Based Violence",#sector+name+norm
+PRO-HLP,"Housing, Land and Property",#sector+name+norm
+PRO-MIN,"Mine Action",#sector+name+norm
+SHL,"Emergency Shelter and NFI",#sector+name+norm
+TEL,"Emergency Telecommunications",#sector+name+norm
+WSH,"Water Sanitation Hygiene",#sector+name+norm

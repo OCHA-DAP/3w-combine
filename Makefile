@@ -17,7 +17,7 @@ REPORTS=$(REPORT_COUNTRY) $(REPORT_ADMIN1) $(REPORT_ADMIN2)
 
 INPUT_DIR=./input
 SECTOR_MAP=$(INPUT_DIR)/sector-map.csv
-SECTOR_MAP=$(INPUT_DIR)/sector-name-map.csv
+SECTOR_NAME_MAP=$(INPUT_DIR)/sector-name-map.csv
 
 # Virtual environment
 
@@ -50,9 +50,9 @@ $(COMBINED_RAW): combine-3w.py $(SCANNED) $(VENV)
 	. $(VENV) && python combine-3w.py $(SCANNED) > output/temp.csv
 	mv output/temp.csv $(COMBINED_RAW)
 
-$(COMBINED_CLEANED): clean-3w.sh $(COMBINED_RAW) $(SECTOR_MAP) $(VENV)
+$(COMBINED_CLEANED): clean-3w.sh $(COMBINED_RAW) $(SECTOR_MAP) $(SECTOR_NAME_MAP) $(VENV)
 	rm -f $(COMBINED_CLEANED)
-	. $(VENV) && cat $(COMBINED_RAW) | sh clean-3w.sh $(SECTOR_MAP) > output/temp.csv
+	. $(VENV) && cat $(COMBINED_RAW) | sh clean-3w.sh $(SECTOR_MAP) $(SECTOR_NAME_MAP) > output/temp.csv
 	mv output/temp.csv $(COMBINED_CLEANED)
 
 #
@@ -63,7 +63,7 @@ $(REPORT_COUNTRY): $(COMBINED_CLEANED) $(VENV)
 	rm -f $(REPORT_COUNTRY)
 	. $(VENV) && cat $(COMBINED_CLEANED) \
 	| hxlexpand -t country+name,country+code \
-	| hxlcount -t org+name,org+acronym,sector+code,country+name,country+code \
+	| hxlcount -t org+name,org+acronym,sector+name+norm,sector+code,country+name,country+code \
 	| hxlcut -x meta+count \
 	> output/temp.csv
 	mv output/temp.csv $(REPORT_COUNTRY)
@@ -72,7 +72,7 @@ $(REPORT_ADMIN1): $(COMBINED_CLEANED) $(VENV)
 	rm -f $(REPORT_ADMIN1)
 	. $(VENV) && cat $(COMBINED_CLEANED) \
 	| hxlexpand -t country+name,country+code \
-	| hxlcount -t org+name,org+acronym,sector+code,country+name,country+code,adm1+name,adm1+code \
+	| hxlcount -t org+name,org+acronym,sector+name+norm,sector+code,country+name,country+code,adm1+name,adm1+code \
 	| hxlcut -x meta+count \
 	> output/temp.csv
 	mv output/temp.csv $(REPORT_ADMIN1)
@@ -81,7 +81,7 @@ $(REPORT_ADMIN2): $(COMBINED_CLEANED) $(VENV)
 	rm -f $(REPORT_ADMIN2)
 	. $(VENV) && cat $(COMBINED_CLEANED) \
 	| hxlexpand -t country+name,country+code \
-	| hxlcount -t org+name,org+acronym,sector+code,country+name,country+code,adm1+name,adm1+code,adm2+name,adm2+code \
+	| hxlcount -t org+name,org+acronym,sector+name+norm,sector+code,country+name,country+code,adm1+name,adm1+code,adm2+name,adm2+code \
 	| hxlcut -x meta+count \
 	> output/temp.csv
 	mv output/temp.csv $(REPORT_ADMIN2)
